@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>mObywatel – weryfikacja strony gov.pl</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  </head>
+
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <div class="status-bar">14:13 ▪︎ PL</div>
+        <div class="app-title-row">
+          <div class="app-icon">PL</div>
+          <div class="app-title-text">
+            <div class="label">QR code</div>
+            <h1>mBezpieczna strona</h1>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <!-- EKRAN 1: DOCUMENTS -->
+        <section id="screen-documents" class="screen active">
+          <div class="card big">
+            <h2>mDowód</h2>
+          </div>
+          <div class="card big">
+            <h2>Student's ID card</h2>
+          </div>
+          <div class="card big">
+            <h2>mPrawo jazdy</h2>
+          </div>
+        </section>
+
+        <!-- EKRAN 2: QR MENU -->
+        <section id="screen-qr-menu" class="screen">
+          <h2>QR code</h2>
+          <p class="description">Wybierz sposób użycia kodu QR.</p>
+
+          <button id="qrScanBtn" class="list-btn">
+            <span>Scan the QR code</span>
+            <span class="chevron">›</span>
+          </button>
+
+          <button class="list-btn secondary">
+            <span>Show the QR code</span>
+            <span class="chevron">›</span>
+          </button>
+        </section>
+
+        <!-- EKRAN 3: SKANER + WYNIK -->
+        <section id="screen-qr-scan" class="screen">
+          <h2>Scan the QR code</h2>
+          <p class="description">
+            Fit the QR within the marked frame to scan it, or enter the code
+            manually.
+          </p>
+
+          <div id="cameraSection" class="camera">
+            <video id="video" playsinline></video>
+            <div class="camera-hint">
+              Wyceluj aparat w kod QR wyświetlony na stronie gov.pl.
+            </div>
+          </div>
+
+          <button id="enterCodeBtn" class="secondary-btn full">
+            Enter the code
+          </button>
+
+          <div id="manualSection" class="card small hidden">
+            <label class="field-label" for="tokenInput">Jednorazowy kod</label>
+            <input
+              id="tokenInput"
+              class="input"
+              type="text"
+              placeholder="Wklej kod z QR lub wpisz ręcznie"
+            />
+            <button id="verifyBtn" class="primary-btn">Sprawdź stronę</button>
+          </div>
+
+          <!-- wynik weryfikacji -->
+          <section id="resultSection" class="card result-card hidden">
+            <div id="resultBadge" class="result-badge">STATUS</div>
+            <h2 id="resultTitle"></h2>
+            <p id="resultMessage" class="description"></p>
+            <ul id="resultDetails" class="result-details"></ul>
+          </section>
+        </section>
+      </main>
+
+      <nav class="app-nav">
+        <button class="nav-btn active" data-target="screen-documents">
+          <span class="nav-icon">📄</span>
+          <span class="nav-label">Documents</span>
+        </button>
+        <button class="nav-btn" data-target="screen-services">
+          <span class="nav-icon">🛠</span>
+          <span class="nav-label">Services</span>
+        </button>
+        <button class="nav-btn" data-target="screen-qr-menu">
+          <span class="nav-icon">▢</span>
+          <span class="nav-label">QR code</span>
+        </button>
+        <button class="nav-btn" data-target="screen-more">
+          <span class="nav-icon">⋯</span>
+          <span class="nav-label">More</span>
+        </button>
+      </nav>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

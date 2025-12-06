@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mock ePUAP + weryfikacja gov</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #0c3f8c;
+        color: #fff;
+      }
+
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 24px;
+        background:
+          url("./epuap-bg.jpg") center/cover no-repeat,
+          #0c3f8c;
+      }
+
+      .hero-inner {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 24px;
+        padding: 24px;
+        max-width: 960px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      .content h1 {
+        margin-top: 0;
+        color: #0c3f8c;
+      }
+
+      .content p {
+        color: #1f2933;
+      }
+
+      .widget-slot {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+      }
+
+      /* style widgetu jak w widget/index.html */
+      .widget {
+        font-family: system-ui, sans-serif;
+        border: 1px solid #dde;
+        border-radius: 8px;
+        padding: 12px;
+        max-width: 320px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        background: #fff;
+        color: #111827;
+      }
+
+      .widget-header {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .widget-meta {
+        font-size: 12px;
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      .btn {
+        width: -webkit-fill-available;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        background: #0052cc;
+        color: white;
+        font-size: 14px;
+      }
+
+      .status {
+        margin-top: 8px;
+        font-size: 13px;
+      }
+
+      .token-box {
+        margin-top: 6px;
+        font-family: monospace;
+        font-size: 12px;
+        word-break: break-all;
+      }
+
+      .qr-box {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="content">
+          <h1>Podpisz dokument elektronicznie za pomocą podpisu zaufanego</h1>
+          <p>
+            Ten widok symuluje stronę ePUAP / gov.pl. Po prawej osadzony jest
+            nasz widget do weryfikacji strony w mObywatel.
+          </p>
+          <!-- tu normalnie byłaby treść serwisu -->
+        </div>
+        <div class="widget-slot">
+          <div id="gov-verify-widget-root">
+            <div class="widget">
+              <div class="widget-header">Weryfikacja strony w mObywatel</div>
+              <div class="widget-meta">
+                <span id="hostname">–</span>
+              </div>
+              <button id="verifyBtn" class="btn">
+                Zweryfikuj tę stronę w mObywatel
+              </button>
+              <div class="status" id="status"></div>
+              <div class="token-box" id="tokenBox"></div>
+              <div class="qr-box" id="qrBox"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="./widget.js"></script>
+  </body>
+</html>

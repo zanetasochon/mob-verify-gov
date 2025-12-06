@@ -1,0 +1,117 @@
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { isTrustedGovDomain } from "./domainUtils";
+import { createToken, getToken, markTokenUsed } from "./tokenStore";
+import { checkSSL } from "./sslChecker";
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
+app.post("/api/is-trusted-domain", (req, res) => {
+  const { url } = req.body as { url?: string };
+
+  if (!url) {
+    return res.status(400).json({ error: "Missing 'url' in body" });
+  }
+
+  const result = isTrustedGovDomain(url);
+  if (!result.valid) {
+    return res.status(400).json({ error: "INVALID_URL" });
+  }
+
+  res.json(result);
+});
+
+app.post("/api/create-token", (req, res) => {
+  const { url } = req.body as { url?: string };
+
+  if (!url) {
+    return res.status(400).json({ error: "Missing 'url' in body" });
+  }
+
+  const domainCheck = isTrustedGovDomain(url);
+  if (!domainCheck.valid) {
+    return res.status(400).json({ error: "INVALID_URL" });
+  }
+
+  const tokenRecord = createToken({
+    hostname: domainCheck.hostname!,
+    url,
+    isTrustedDomainCandidate: !!domainCheck.endsWithGovPl,
+  });
+
+  res.json({
+    token: tokenRecord.token,
+    expiresAt: tokenRecord.expiresAt,
+    hostname: tokenRecord.hostname,
+    endsWithGovPl: domainCheck.endsWithGovPl,
+    inRegistry: domainCheck.inRegistry,
+    isTrustedDomainCandidate: tokenRecord.isTrustedDomainCandidate,
+  });
+});
+
+app.post("/api/verify-token", async (req, res) => {
+  const { token } = req.body as { token?: string };
+
+  if (!token) {
+    return res.status(400).json({ error: "MISSING_TOKEN" });
+  }
+
+  const record = getToken(token);
+
+  if (!record) {
+    return res.status(404).json({ error: "TOKEN_NOT_FOUND" });
+  }
+
+  if (record.status === "EXPIRED") {
+    return res.status(410).json({ error: "TOKEN_EXPIRED" });
+  }
+
+  if (record.status === "USED") {
+    return res.status(409).json({ error: "TOKEN_ALREADY_USED" });
+  }
+
+  try {
+    const domainCheck = isTrustedGovDomain(record.url);
+    const sslCheck = await checkSSL(record.hostname);
+
+    markTokenUsed(token);
+
+    return res.json({
+      token: record.token,
+      hostname: record.hostname,
+      url: record.url,
+      status: domainCheck.isTrusted ? "TRUSTED" : "UNTRUSTED",
+      details: {
+        endsWithGovPl: domainCheck.endsWithGovPl,
+        inRegistry: domainCheck.inRegistry,
+      },
+      ssl: sslCheck,
+    });
+  } catch (e) {
+    console.error("verify-token failed", e);
+    return res.status(500).json({ error: "VERIFY_FAILED" });
+  }
+});
+
+const mobywatelPath = path.resolve(__dirname, "..", "..", "mobywatel-demo");
+console.log("Serving mObywatel frontend from:", mobywatelPath);
+
+app.use(express.static(mobywatelPath));
+
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(mobywatelPath, "index.html"));
+});
+
+const PORT = 4000;
+
+app.listen(PORT, () => {
+  console.log(`Verify API running on http://localhost:${PORT}`);
+});

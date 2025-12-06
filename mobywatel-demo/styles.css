@@ -1,0 +1,269 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  background: #000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.app {
+  width: 390px;
+  max-width: 100%;
+  height: 844px;
+  max-height: 100vh;
+  background: #0e1317;
+  border-radius: 32px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #1f2533;
+}
+
+.app-header {
+  padding: 16px 20px 8px;
+}
+
+.status-bar {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.app-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #c62828, #ffeb3b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.app-title-text .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+.app-title-text h1 {
+  font-size: 20px;
+  margin: 2px 0 0;
+}
+
+.app-main {
+  flex: 1;
+  padding: 12px 16px 8px;
+  overflow-y: auto;
+}
+
+.card {
+  background: #1e2224;
+  border-radius: 20px;
+  padding: 16px 16px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  border: 1px solid #1f2937;
+}
+
+.card + .card {
+  margin-top: 12px;
+}
+
+.card h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  padding-bottom: 8px;
+}
+
+.description {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #d1d5db;
+}
+
+.field-label {
+  font-size: 12px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #374151;
+  background: #0e1317;
+  color: #e5e7eb;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #05a8ff;
+  box-shadow: 0 0 0 1px #05a8ff;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #05a8ff;
+  color: #0e1317;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primary-btn:active {
+  opacity: 0.9;
+}
+
+.helper-text {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.result-card {
+  min-height: 160px;
+}
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.result-badge--trusted {
+  background: rgba(22, 163, 74, 0.12);
+  color: #4ade80;
+}
+
+.result-badge--untrusted {
+  background: rgba(220, 38, 38, 0.12);
+  color: #fca5a5;
+}
+
+.result-card h2 {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.result-details {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.hidden {
+  display: none;
+}
+
+.app-nav {
+  display: flex;
+  border-top: 1px solid #32363a;
+  background: #1e2224;
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 10px 4px 23px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-btn.active {
+  color: #e1e6e9;
+}
+
+.nav-icon {
+  font-size: 16px;
+}
+
+.nav-label {
+  font-size: 11px;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+.card.big {
+  height: 100px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  background: radial-gradient(circle at top left, #1d4ed8, #312e81);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 12px;
+}
+
+.list-btn {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 8px;
+  border-radius: 16px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.list-btn.secondary {
+  opacity: 0.7;
+}
+
+.chevron {
+  font-size: 18px;
+}
+
+.secondary-btn.full {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.card.small {
+  margin-top: 10px;
+}
