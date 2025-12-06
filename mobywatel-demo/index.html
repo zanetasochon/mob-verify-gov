@@ -2,67 +2,134 @@
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>mObywatel – weryfikacja strony gov.pl</title>
     <link rel="stylesheet" href="./styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   </head>
 
   <body>
     <div class="app">
       <header class="app-header">
-        <div class="status-bar">14:13 ▪︎ PL</div>
         <div class="app-title-row">
-          <div class="app-icon">PL</div>
-          <div class="app-title-text">
-            <div class="label">QR code</div>
-            <h1>mBezpieczna strona</h1>
+          <div class="app-title-main">
+            <img
+              src="./godło-pl.png"
+              alt="Godło Rzeczypospolitej Polskiej"
+              class="app-icon"
+            />
+            <div class="app-title-text">
+              <div class="label label-main">mObywatel</div>
+            </div>
           </div>
+          <button class="app-bell" aria-label="Powiadomienia">
+            <i class="fa-regular fa-bell"></i>
+          </button>
         </div>
       </header>
 
       <main class="app-main">
         <!-- EKRAN 1: DOCUMENTS -->
         <section id="screen-documents" class="screen active">
-          <div class="card big">
+          <div class="card big card--primary">
             <h2>mDowód</h2>
+            <div class="card-status">
+              <img
+                src="./godło-pl.png"
+                alt="Godło Rzeczypospolitej Polskiej"
+                class="card-status-icon"
+              />
+              <span class="card-status-alert"></span>
+            </div>
           </div>
-          <div class="card big">
+          <div class="card big card--secondary">
             <h2>Student's ID card</h2>
+            <div class="card-status">
+              <img
+                src="./godło-pl.png"
+                alt="Godło Rzeczypospolitej Polskiej"
+                class="card-status-icon"
+              />
+              <span class="card-status-alert"></span>
+            </div>
           </div>
-          <div class="card big">
+          <div class="card big card--tertiary">
             <h2>mPrawo jazdy</h2>
+            <div class="card-status card-status--pl">
+              <span class="card-status-chip">PL</span>
+              <span class="card-status-alert"></span>
+            </div>
           </div>
         </section>
 
         <!-- EKRAN 2: QR MENU -->
         <section id="screen-qr-menu" class="screen">
-          <h2>QR code</h2>
-          <p class="description">Wybierz sposób użycia kodu QR.</p>
+          <h2 class="qr-title">QR code</h2>
+          <p class="qr-subtitle">
+            This function allows you to log in to online services and confirm
+            digital documents, both yours and those of another person.
+          </p>
 
-          <button id="qrScanBtn" class="list-btn">
-            <span>Scan the QR code</span>
-            <span class="chevron">›</span>
-          </button>
+          <div class="qr-actions">
+            <button id="qrScanBtn" class="qr-row">
+              <span class="qr-row-icon">
+                <i class="fa-regular fa-up-right-from-square"></i>
+              </span>
+              <div class="qr-row-main">
+                <span class="qr-row-title">Scan the QR code</span>
+                <span class="qr-row-description">
+                  Log in to the website or confirm your digital document.
+                </span>
+              </div>
+              <span class="qr-row-chevron">
+                <i class="fa-solid fa-chevron-right"></i>
+              </span>
+            </button>
 
-          <button class="list-btn secondary">
-            <span>Show the QR code</span>
-            <span class="chevron">›</span>
-          </button>
+            <div class="qr-divider"></div>
+
+            <button class="qr-row secondary">
+              <span class="qr-row-icon">
+                <i class="fa-regular fa-qrcode"></i>
+              </span>
+              <div class="qr-row-main">
+                <span class="qr-row-title">Show the QR code</span>
+                <span class="qr-row-description">
+                  Check the other person's digital document.
+                </span>
+              </div>
+              <span class="qr-row-chevron">
+                <i class="fa-solid fa-chevron-right"></i>
+              </span>
+            </button>
+          </div>
         </section>
 
         <!-- EKRAN 3: SKANER + WYNIK -->
         <section id="screen-qr-scan" class="screen">
-          <h2>Scan the QR code</h2>
-          <p class="description">
-            Fit the QR within the marked frame to scan it, or enter the code
-            manually.
+          <div class="qr-scan-header">
+            <button id="qrScanBack" class="qr-scan-back">
+              <i class="fa-solid fa-chevron-left"></i>
+              <span>QR code</span>
+            </button>
+            <div class="qr-scan-title">Scan the QR code</div>
+            <button id="qrScanHelp" class="qr-scan-help" aria-label="Help">
+              <i class="fa-regular fa-circle-question"></i>
+            </button>
+          </div>
+          <p class="qr-scan-subtitle">
+            Fit the QR within the marked frame to scan it.
           </p>
 
           <div id="cameraSection" class="camera">
             <video id="video" playsinline></video>
-            <div class="camera-hint">
-              Wyceluj aparat w kod QR wyświetlony na stronie gov.pl.
-            </div>
           </div>
 
           <button id="enterCodeBtn" class="secondary-btn full">
@@ -92,15 +159,15 @@
 
       <nav class="app-nav">
         <button class="nav-btn active" data-target="screen-documents">
-          <span class="nav-icon">📄</span>
+          <span class="nav-icon"><i class="fa-regular fa-file"></i></span>
           <span class="nav-label">Documents</span>
         </button>
         <button class="nav-btn" data-target="screen-services">
-          <span class="nav-icon">🛠</span>
+          <span class="nav-icon"><i class="fa-regular fa-folder"></i></span>
           <span class="nav-label">Services</span>
         </button>
         <button class="nav-btn" data-target="screen-qr-menu">
-          <span class="nav-icon">▢</span>
+          <span class="nav-icon"><i class="fa-solid fa-qrcode"></i></span>
           <span class="nav-label">QR code</span>
         </button>
         <button class="nav-btn" data-target="screen-more">

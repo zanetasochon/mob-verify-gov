@@ -4,6 +4,11 @@ import path from "path";
 import { isTrustedGovDomain } from "./domainUtils";
 import { createToken, getToken, markTokenUsed } from "./tokenStore";
 import { checkSSL } from "./sslChecker";
+import {
+  getVerification,
+  setVerificationPending,
+  setVerificationResult,
+} from "./verificationStore";
 
 const app = express();
 
@@ -47,6 +52,9 @@ app.post("/api/create-token", (req, res) => {
     isTrustedDomainCandidate: !!domainCheck.endsWithGovPl,
   });
 
+  // oznaczamy weryfikację jako oczekującą, aby widget mógł później odpytać
+  setVerificationPending(tokenRecord.token);
+
   res.json({
     token: tokenRecord.token,
     expiresAt: tokenRecord.expiresAt,
@@ -82,16 +90,25 @@ app.post("/api/verify-token", async (req, res) => {
     const domainCheck = isTrustedGovDomain(record.url);
     const sslCheck = await checkSSL(record.hostname);
 
+    const status = domainCheck.isTrusted ? "TRUSTED" : "UNTRUSTED";
+
+    setVerificationResult(token, {
+      status,
+      endsWithGovPl: !!domainCheck.endsWithGovPl,
+      inRegistry: !!domainCheck.inRegistry,
+      sslStatus: sslCheck.status,
+    });
+
     markTokenUsed(token);
 
     return res.json({
       token: record.token,
       hostname: record.hostname,
       url: record.url,
-      status: domainCheck.isTrusted ? "TRUSTED" : "UNTRUSTED",
+      status,
       details: {
-        endsWithGovPl: domainCheck.endsWithGovPl,
-        inRegistry: domainCheck.inRegistry,
+        endsWithGovPl: !!domainCheck.endsWithGovPl,
+        inRegistry: !!domainCheck.inRegistry,
       },
       ssl: sslCheck,
     });
@@ -99,6 +116,33 @@ app.post("/api/verify-token", async (req, res) => {
     console.error("verify-token failed", e);
     return res.status(500).json({ error: "VERIFY_FAILED" });
   }
+});
+
+app.get("/api/token-status", (req, res) => {
+  const token = req.query.token as string | undefined;
+
+  if (!token) {
+    return res.status(400).json({ error: "TOKEN_REQUIRED" });
+  }
+
+  const record = getToken(token);
+  if (!record) {
+    return res.status(404).json({ error: "TOKEN_NOT_FOUND" });
+  }
+
+  if (record.status === "EXPIRED") {
+    return res.status(410).json({ error: "TOKEN_EXPIRED" });
+  }
+
+  const verification = getVerification(token);
+
+  return res.json({
+    token: record.token,
+    hostname: record.hostname,
+    url: record.url,
+    verificationStatus: verification?.status ?? "PENDING",
+    verificationResult: verification?.result ?? null,
+  });
 });
 
 const mobywatelPath = path.resolve(__dirname, "..", "..", "mobywatel-demo");

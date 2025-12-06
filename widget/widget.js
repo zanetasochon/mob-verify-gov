@@ -7,6 +7,8 @@ const qrBox = document.getElementById("qrBox");
 const btn = document.getElementById("verifyBtn");
 
 let qrInstance = null;
+let currentToken = null;
+let statusInterval = null;
 
 function getCurrentUrl() {
   return window.location.href || "https://100sekund.gov.pl";
@@ -39,10 +41,66 @@ function renderAlert(severity, title, message) {
   `;
 }
 
+function clearStatusPolling() {
+  if (statusInterval) {
+    clearInterval(statusInterval);
+    statusInterval = null;
+  }
+}
+
+function startStatusPolling() {
+  if (!currentToken) return;
+  clearStatusPolling();
+
+  statusInterval = setInterval(async () => {
+    try {
+      const res = await fetch(
+        `${API_URL}/api/token-status?token=${encodeURIComponent(currentToken)}`
+      );
+      if (!res.ok) {
+        return;
+      }
+      const data = await res.json();
+
+      if (data.verificationStatus === "VERIFIED" && data.verificationResult) {
+        clearStatusPolling();
+        const trusted = data.verificationResult.status === "TRUSTED";
+
+        if (trusted) {
+          renderAlert(
+            "success",
+            "Strona potwierdzona w mObywatel",
+            "Ta strona została zweryfikowana jako zaufana w aplikacji mObywatel."
+          );
+        } else {
+          let reason =
+            "System nie potwierdził autentyczności tej strony. Może to być próba phishingu lub podszycia się pod serwis administracji publicznej.";
+
+          if (
+            !data.verificationResult.inRegistry ||
+            !data.verificationResult.endsWithGovPl
+          ) {
+            reason =
+              "System nie potwierdził, że domena znajduje się w oficjalnym rejestrze gov.pl.";
+          } else if (data.verificationResult.sslStatus !== "OK") {
+            reason =
+              "Certyfikat SSL tej strony jest nieprawidłowy lub niesprawdzony. Może to być próba podszycia się pod oficjalną witrynę.";
+          }
+
+          renderAlert("error", "Uwaga: strona niezaufana", reason);
+        }
+      }
+    } catch (e) {
+      console.warn("Token status polling error", e);
+    }
+  }, 3000);
+}
+
 btn.addEventListener("click", async () => {
   renderAlert("info", "Trwa weryfikacja", "Tworzenie jednorazowego tokenu...");
   tokenBox.textContent = "";
   qrBox.innerHTML = "";
+  clearStatusPolling();
 
   try {
     const res = await fetch(`${API_URL}/api/create-token`, {
@@ -58,6 +116,7 @@ btn.addEventListener("click", async () => {
     }
 
     const data = await res.json();
+    currentToken = data.token;
 
     if (data.inRegistry) {
       renderAlert(
@@ -85,6 +144,8 @@ btn.addEventListener("click", async () => {
       height: 128,
       correctLevel: QRCode.CorrectLevel.M,
     });
+
+    startStatusPolling();
   } catch (e) {
     renderAlert(
       "error",

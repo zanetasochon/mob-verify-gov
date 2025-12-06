@@ -1,4 +1,4 @@
-const API_URL = "http://10.250.165.39:4000";
+const API_URL = "https://angella-evolutive-bibi.ngrok-free.dev";
 
 let videoStream = null;
 let scanning = false;
@@ -18,9 +18,12 @@ const cameraSection = document.getElementById("cameraSection");
 
 function showScreen(id) {
   screens.forEach((s) => s.classList.toggle("active", s.id === id));
-  navButtons.forEach((b) =>
-    b.classList.toggle("active", b.dataset.target === id)
-  );
+  navButtons.forEach((b) => {
+    const target = b.dataset.target;
+    const isActive =
+      target === id || (id === "screen-qr-scan" && target === "screen-qr-menu");
+    b.classList.toggle("active", isActive);
+  });
 
   if (id !== "screen-qr-scan") {
     stopCamera();
@@ -42,6 +45,22 @@ if (qrScanBtn) {
   qrScanBtn.addEventListener("click", () => {
     showScreen("screen-qr-scan");
     startCameraAndScan();
+  });
+}
+
+const qrScanBackBtn = document.getElementById("qrScanBack");
+if (qrScanBackBtn) {
+  qrScanBackBtn.addEventListener("click", () => {
+    showScreen("screen-qr-menu");
+  });
+}
+
+const qrScanHelpBtn = document.getElementById("qrScanHelp");
+if (qrScanHelpBtn) {
+  qrScanHelpBtn.addEventListener("click", () => {
+    alert(
+      "Fit the QR within the marked frame to scan it. Make sure the camera has permission to access."
+    );
   });
 }
 
