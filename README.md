@@ -1,4 +1,4 @@
-# mObywatel – weryfikacja stron gov.pl
+# mWeryfikacja – weryfikacja stron gov.pl
 
 ## 1. Wprowadzenie
 Phishing coraz częściej wykorzystuje fałszywe strony stylizowane na portale administracji publicznej. Celem projektu jest umożliwienie obywatelom samodzielnej, wiarygodnej weryfikacji stron w domenach gov.pl (oraz subdomen) przy użyciu aplikacji mObywatel i jednorazowych kodów QR.
