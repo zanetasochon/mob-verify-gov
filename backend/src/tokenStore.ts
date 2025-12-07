@@ -22,7 +22,7 @@ export type TokenWithStatus = TokenRecord & { status: TokenStatus };
 
 const TOKENS = new Map<string, TokenRecord>();
 
-// Domyślnie token ważny 5 minut
+// Token is valid for 5 minutes by default
 const TOKEN_TTL_MS = 5 * 60 * 1000;
 
 export function createToken(input: CreateTokenInput): TokenRecord {

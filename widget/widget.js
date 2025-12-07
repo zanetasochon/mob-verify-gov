@@ -11,7 +11,7 @@ let currentToken = null;
 let statusInterval = null;
 
 function getCurrentUrl() {
-  // pozwala łatwo wymusić domenę z rejestru (.gov.pl) do testów pozytywnego scenariusza
+  // Allows overriding the domain (.gov.pl) for positive test scenarios
   const urlParam = new URLSearchParams(window.location.search).get("url");
   return urlParam || window.location.href || "https://100sekund.gov.pl";
 }

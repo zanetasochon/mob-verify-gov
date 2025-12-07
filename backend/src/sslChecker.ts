@@ -14,8 +14,8 @@ export interface SSLCheckResult {
 }
 
 /**
- * Sprawdza certyfikat SSL dla danego hosta (port 443).
- * Nie ufamy mu „na słowo” – korzystamy z wbudowanej w Node listy CA.
+ * Checks the SSL certificate for the given host (port 443).
+ * Uses Node's built-in CA list instead of trusting the host blindly.
  */
 export function checkSSL(hostname: string): Promise<SSLCheckResult> {
   return new Promise((resolve) => {
@@ -24,7 +24,7 @@ export function checkSSL(hostname: string): Promise<SSLCheckResult> {
         host: hostname,
         port: 443,
         servername: hostname,
-        // chcemy móc odczytać cert nawet gdy jest nieprawidłowy
+        // Allow reading the certificate even when it is invalid
         rejectUnauthorized: false,
       },
       () => {
@@ -46,7 +46,7 @@ export function checkSSL(hostname: string): Promise<SSLCheckResult> {
           status: "OK",
         };
 
-        // brak certyfikatu
+        // No certificate was presented
         if (!hasCert) {
           socket.end();
           return resolve({
@@ -56,7 +56,7 @@ export function checkSSL(hostname: string): Promise<SSLCheckResult> {
           });
         }
 
-        // Node mówi, że cert jest nieautoryzowany (expired, self-signed, wrong host itp.)
+        // Node reports the certificate as unauthorized (expired, self-signed, wrong host, etc.)
         if (!authorized) {
           socket.end();
           return resolve({

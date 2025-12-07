@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type Request, type Response } from "express";
 import cors from "cors";
 import path from "path";
 import { isTrustedGovDomain } from "./domainUtils";
@@ -52,7 +52,7 @@ app.post("/api/create-token", (req, res) => {
     isTrustedDomainCandidate: !!domainCheck.endsWithGovPl,
   });
 
-  // oznaczamy weryfikację jako oczekującą, aby widget mógł później odpytać
+  // Mark verification as pending so the widget can poll later
   setVerificationPending(tokenRecord.token);
 
   res.json({
@@ -65,7 +65,7 @@ app.post("/api/create-token", (req, res) => {
   });
 });
 
-app.post("/api/verify-token", async (req, res) => {
+app.post("/api/verify-token", async (req: Request, res: Response) => {
   const { token } = req.body as { token?: string };
 
   if (!token) {
