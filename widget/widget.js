@@ -19,7 +19,6 @@ function getCurrentUrl() {
 hostnameSpan.textContent = new URL(getCurrentUrl()).hostname;
 
 function buildVerifyPayload(token) {
-  // tu NIE wkładamy URL ani danych osobowych – tylko jednorazowy identyfikator (nonce)
   return `GOVVERIFY:${token}`;
 }
 
@@ -114,7 +113,6 @@ btn.addEventListener("click", async () => {
     const res = await fetch(`${API_URL}/api/create-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // backend oczekuje pola "url"
       body: JSON.stringify({ url: getCurrentUrl() }),
     });
 
