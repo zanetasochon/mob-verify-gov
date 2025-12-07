@@ -11,7 +11,9 @@ let currentToken = null;
 let statusInterval = null;
 
 function getCurrentUrl() {
-  return window.location.href || "https://100sekund.gov.pl";
+  // pozwala łatwo wymusić domenę z rejestru (.gov.pl) do testów pozytywnego scenariusza
+  const urlParam = new URLSearchParams(window.location.search).get("url");
+  return urlParam || window.location.href || "https://100sekund.gov.pl";
 }
 
 hostnameSpan.textContent = new URL(getCurrentUrl()).hostname;
@@ -92,6 +94,12 @@ function startStatusPolling() {
       }
     } catch (e) {
       console.warn("Token status polling error", e);
+      clearStatusPolling();
+      renderAlert(
+        "error",
+        "Błąd połączenia",
+        "Nie udało się pobrać wyniku weryfikacji z serwera. Traktuj stronę jako potencjalnie niebezpieczną i spróbuj ponownie później."
+      );
     }
   }, 3000);
 }
@@ -106,6 +114,7 @@ btn.addEventListener("click", async () => {
     const res = await fetch(`${API_URL}/api/create-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      // backend oczekuje pola "url"
       body: JSON.stringify({ url: getCurrentUrl() }),
     });
 
